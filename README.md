@@ -63,4 +63,6 @@ For further information, visit the [Debezium documentation](https://debezium.io/
 
 ## Reference
 - https://youtu.be/6VbRlQ0rL3I?si=EUIfbHUXrmN4sF_X
-- 
+- https://www.baeldung.com/debezium-intro
+- https://www.youtube.com/watch?v=n0m6r0kXZh8
+- https://www.youtube.com/watch?v=n0m6r0kXZh8
