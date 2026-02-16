@@ -1,0 +1,30 @@
+{
+  "name": "ome-source",                    // Connector name (shows in Debezium/Redpanda Console)
+  "config": {
+    "connector.class": "io.debezium.connector.postgresql.PostgresConnector",  // Use the PostgreSQL CDC connector
+    "database.hostname": "postgres1",       // Connect to this host
+    "database.port": "5432",
+    "database.user": "postgres",
+    "database.password": "postgres",
+    "database.dbname": "omedb",             // Database to capture changes from
+
+    "topic.prefix": "ome",                  // Kafka topic prefix: ome.public.devices, ome.public.alerts, etc.
+    "slot.name": "debezium_slot",           // Use THIS replication slot (we created it in Go)
+    "plugin.name": "pgoutput",              // WAL decoder plugin (built into PostgreSQL 10+)
+    "publication.name": "dbz_publication",  // Read from THIS publication
+
+    "snapshot.mode": "never",               // CRITICAL: Don't snapshot. We already did pg_dump.
+                                            // If "initial", Debezium would SELECT * from every table first.
+    // FILTER: only these tables
+    "table.include.list": "public.device_types,public.devices,public.device_inventory,public.groups,public.group_memberships,public.alert_categories,public.alerts,public.device_health,public.firmware_catalog,public.compliance_baselines,public.compliance_results,public.users,public.job_history",
+    
+    "key.converter": "org.apache.kafka.connect.json.JsonConverter", // Serialize keys as JSON
+    "key.converter.schemas.enable": "false", // Don't include schema in key (keeps messages small)
+    "value.converter": "org.apache.kafka.connect.json.JsonConverter", // Serialize values as JSON
+    "value.converter.schemas.enable": "false",
+
+    "tombstones.on.delete": "false",        // Don't send null tombstone messages on DELETE
+    "decimal.handling.mode": "string",       // Send decimals as strings (avoids precision loss)
+    "time.precision.mode": "isostring"
+  }
+}

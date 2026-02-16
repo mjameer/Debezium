@@ -1,0 +1,27 @@
+# 3-WRITER: postgres2 (target) + Go writer service
+
+networks:
+  cdc-network:
+    name: cdc-network
+    external: true
+
+services:
+  postgres2:
+    image: docker.io/postgres:17-bookworm
+    container_name: postgres2
+    networks: [cdc-network]
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    ports:
+      - "5434:5432"
+
+  writer:
+    build: .
+    container_name: writer
+    networks: [cdc-network]
+    restart: unless-stopped
+    depends_on:
+      - postgres2
